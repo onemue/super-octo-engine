@@ -3,12 +3,11 @@ import Utils from "Utils";
 export default class Model {
     // TODO 创建model
     constructor(name, options) {
-        let _this = this;
-        _this.name = name;
-        _this.options = options;
+        this.name = name;
+        this.options = options;
 
         if (config.isConnect) {
-            _this.repair();
+            this.repair();
         } else {
             if (!config.name || !config.path) {
                 console.error('"config.name" or "config.path" is empty');
@@ -23,17 +22,16 @@ export default class Model {
      * @param {Function} callback :（err,results）=>{}
      */
     insert(options, callback) {
-        let _this = this;
         let sql = ``;
 
         if (Utils.isArray(options)) {
-            _this.insertBulk(options, callback);
-            return _this;
+            this.insertBulk(options, callback);
+            return this;
         }
 
         sql = `INSERT INTO ${this.name} (${Object.keys(options).join(',')}) VALUES (${Object.values(options).map(item => `'${item}'`).join(',')})`;
         this.query(sql, callback);
-        return _this;
+        return this;
     }
 
     /**
@@ -42,15 +40,14 @@ export default class Model {
      * @param {Function} callback :（err,results）=>{}
      */
     async bulkInsert(options, callback) {
-        let _this = this;
         let sql = ``;
         let result;
-        _this.beginTransaction(() => {
+        this.beginTransaction(() => {
             try {
                 if (Utils.isArray(options)) {
-                    options.forEach(item => {
+                    options.forEach(async item => {
                         sql = `INSERT INTO ${this.name} (${Object.keys(item).join(',')}) VALUES (${Object.values(item).map(item => `'${item}'`).join(',')})`;
-                        result = await _this.queryAsync(sql);
+                        result = await this.queryAsync(sql);
 
                         if (result.code) {
                             let error = result;
@@ -61,21 +58,21 @@ export default class Model {
                     });
                 }
 
-                _this.commitTransaction().then(() => {
+                this.commitTransaction().then(() => {
                     callback(null, result);
 
                 }).catch(error => {
                     callback(error);
                 });
             } catch (error) {
-                _this.rollbackTransaction().then(() => {
+                this.rollbackTransaction().then(() => {
                     callback(error);
                 }).catch(error => {
                     callback(error);
                 });
             }
         })
-        return _this;
+        return this;
     }
 
     /**
@@ -84,7 +81,6 @@ export default class Model {
      * @param {Function} callback :（err,results）=>{}
      */
     delete() {
-        let _this = this;
         let options = Array.prototype.slice.call(arguments, 0, arguments.length - 1);
         let callback = arguments[arguments.length - 1];
         let where = options.find(item => Utils.isString(item));
@@ -95,7 +91,7 @@ export default class Model {
             sql = `DELETE FROM ${this.name}`;
         }
         this.query(sql, callback);
-        return _this;
+        return this;
     }
 
 
@@ -106,7 +102,6 @@ export default class Model {
      * @param {Function} callback :（err,results）=>{}
      */
     update() {
-        let _this = this;
         let options = Array.prototype.slice.call(arguments, 0, arguments.length - 1);
         let callback = arguments[arguments.length - 1];
         let where = options.find(item => Utils.isString(item));
@@ -120,7 +115,7 @@ export default class Model {
         }
 
         this.query(sql, callback);
-        return _this;
+        return this;
     }
 
 
@@ -133,7 +128,6 @@ export default class Model {
      * @returns 
      */
     find() {
-        let _this = this;
         let options = Array.prototype.slice.call(arguments, 0, arguments.length - 1);
         let callback = arguments[arguments.length - 1];
         let where = options.find(item => Utils.isString(item));
@@ -147,7 +141,7 @@ export default class Model {
         }
 
         this.query(sql, callback);
-        return _this;
+        return _ththisis;
     }
 
 
@@ -158,7 +152,6 @@ export default class Model {
      * @return
      */
     limit() {
-        let _this = this;
         let options = Array.prototype.slice.call(arguments, 0, arguments.length - 1);
         let callback = arguments[arguments.length - 1];
         let where = options.where;
@@ -173,7 +166,7 @@ export default class Model {
         }
 
         this.query(sql, callback);
-        return _this;
+        return this;
     }
     // TODO 多表联查
     join() { }
@@ -228,8 +221,6 @@ export default class Model {
          * @param {Function} callback 回调函数
          */
     transaction(control, callback) {
-        let _this = this;
-
         if (!Utils.isString(control)) {
             Utils.error('The first parameter of Model.transaction should be "String".')
         }
@@ -238,7 +229,7 @@ export default class Model {
         }
 
         if (control === 'begin' || control === 'start') {
-            _this.beginTransaction().then(() => {
+            this.beginTransaction().then(() => {
                 callback(null);
             }
             ).catch(e => {
@@ -246,7 +237,7 @@ export default class Model {
             });
         }
         else if (control === 'commit' || control === 'end') {
-            _this.commitTransaction().then(() => {
+            this.commitTransaction().then(() => {
                 callback(null);
             }
             ).catch(e => {
@@ -254,7 +245,7 @@ export default class Model {
             });
         }
         else if (control === 'rollback' || control === 'cancel') {
-            _this.rollbackTransaction().then(() => {
+            this.rollbackTransaction().then(() => {
                 callback(null);
             }
             ).catch(e => {
@@ -330,10 +321,6 @@ export default class Model {
     toString() {
         return `[${this.name} Model]`;
     }
-
-
-
-
 
     static #modelSql(name, options) {
         let sql;
@@ -437,8 +424,7 @@ export default class Model {
             Utils.error('The type of "callback" is wrong, it should be "Function".');
         }
 
-        let _this = this;
-        let sql = Utils.modelSql(_this.name, _this.options);
+        let sql = Utils.modelSql(this.name, this.options);
         Utils.log(`create: ${sql}`);
         plus.sqlite.executeSql({
             name: config.name,
@@ -454,14 +440,13 @@ export default class Model {
     }
 
     repair() {
-        let _this = this;
-        _this.isExist(function (e, r) {
+        this.isExist(function (e, r) {
             if (e) {
                 console.error(e);
             }
 
             if (!r[0].isExist) {
-                _this.create(function (e, r) {
+                this.create(function (e, r) {
                     Utils.log(e, r);
                 });
             }
@@ -479,7 +464,6 @@ export default class Model {
         }
 
         let sql = `SELECT count(*) AS isExist FROM sqlite_master WHERE type='table' AND name='${this.name}'`;
-        let _this = this;
         Utils.log(`isExist: ${sql}`);
         Utils.log(`isExist: ${config.name}`);
         plus.sqlite.selectSql({

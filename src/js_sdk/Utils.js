@@ -3,9 +3,7 @@ let config = {
 };
 
 export default class Utils {
-
-
-    static log() {
+  static log() {
 		if (config.deBug) {
 			console.log.apply(null, arguments);
 		}

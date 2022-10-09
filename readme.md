@@ -8,12 +8,11 @@
 
 ![Github stars](https://img.shields.io/github/stars/onemue/u-sqlite.svg)
 
-
 > u-SQLite 交流群：643867519 如果觉的当前插件对你有帮助可以前往 [github](https://github.com/onemue/u-sqlite) 点 star!
 >
 > v3.x 将通过测试后发布目前尚未经过测试。
 >
-> 有uniapp 安卓自动化测试经历的可以联系我，自动化测试找不到设备不知道什么问题
+> v3.0 将会重新调整部分内容整体，之前由于部分原因没有继续开发，目前将会按照部分时间开发v3.x版本，大约将会在1月1日前开发完成开发以及测试。
 
 ### 技术亮点
 
@@ -25,24 +24,24 @@
 
 ### 安装方法
 
-1. 通过DCloud 插件市场安装 [u-SQLite V2 - DCloud 插件市场](https://ext.dcloud.net.cn/plugin?id=6974)
+1. 通过DCloud 插件市场安装 [u-SQLite V2 - DCloud 插件市场](https://ext.dcloud.net.cn/plugin?id=6974 "2.x 版本已经暂时放弃")
 
 ### 里程碑
 
 #### 开发里程
 
-- [x] 数据库链接 (异步&同步)
-- [x] 数据库断开(异步&同步)
-- [x] 创建model
-- [x] model-增加数据
-- [x] model-批量增加数据
-- [x] model-删除数据
-- [x] model-修改数据
-- [x] model-查看数据
-- [x] model-分页查找
+- [X] 数据库链接 (异步&同步)
+- [X] 数据库断开(异步&同步)
+- [X] 创建model
+- [X] model-增加数据
+- [X] model-批量增加数据
+- [X] model-删除数据
+- [X] model-修改数据
+- [X] model-查看数据
+- [X] model-分页查找
 - [ ] model-多表联查
-- [x] model-自定义sql
-- [x] model-事务相关操作
+- [X] model-自定义sql
+- [X] model-事务相关操作
 - [ ] model-视图相关操作
 - [ ] model-索引相关操作
 - [ ] model-表的相关操作
